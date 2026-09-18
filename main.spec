@@ -2,28 +2,23 @@
 
 import sys
 import os
+import glob
 
-# 获取 Python 环境中的 tcl/tk 路径
-python_path = sys.prefix
-tcl_lib = os.path.join(python_path, 'tcl')
-tk_lib = os.path.join(python_path, 'tk')
+block_cipher = None
 
 a = Analysis(
     ['main.py'],
     pathex=[],
-    binaries=[
-        # 手动添加 tcl/tk 动态库
-        ('tcl86t.dll', os.path.join(tcl_lib, 'tcl86t.dll'), 'tcl'),
-        ('tk86t.dll', os.path.join(tk_lib, 'tk86t.dll'), 'tk'),
-    ],
+    binaries=[],
     datas=[
-        # 添加 tcl/tk 库文件
-        (tcl_lib, 'tcl'),
-        (tk_lib, 'tk'),
+        # 包含 tkinter 的 tcl/tk 库
+        (glob.glob(os.path.join(sys.prefix, 'tcl', '*')), 'tcl'),
+        (glob.glob(os.path.join(sys.prefix, 'tk', '*')), 'tk'),
     ],
     hiddenimports=[
         'tkinter',
         '_tkinter',
+        'tkinter.filedialog',
     ],
     hookspath=[],
     hooksconfig={},
@@ -44,7 +39,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,  # 改为 False 以便显示窗口
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
