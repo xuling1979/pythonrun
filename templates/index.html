@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目打包工具</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>项目打包工具</h1>
+        <p class="subtitle">上传项目 ZIP 文件，选择编译平台进行打包</p>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="projectFile">项目 ZIP 文件：</label>
+                <input type="file" id="projectFile" name="file" accept=".zip" required>
+            </div>
+
+            <div class="form-group">
+                <label for="platform">目标平台：</label>
+                <select id="platform" name="platform" required>
+                    {% for key, value in platforms.items() %}
+                    <option value="{{ key }}">{{ key }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" id="submitBtn">打包下载</button>
+        </form>
+
+        <div id="message" class="message hidden"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageDiv.classList.add('hidden');
+            messageDiv.className = 'message';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '打包中...';
+
+            const formData = new FormData(form);
+            const fileInput = document.getElementById('projectFile');
+            const platform = document.getElementById('platform').value;
+
+            try {
+                const response = await fetch('/package', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || '打包失败');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `project_${platform}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                messageDiv.textContent = '打包完成！下载已开始。';
+                messageDiv.classList.add('success');
+            } catch (error) {
+                messageDiv.textContent = error.message;
+                messageDiv.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '打包下载';
+                messageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

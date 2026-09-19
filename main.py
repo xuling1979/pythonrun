@@ -122,7 +122,6 @@ import heapq
 import hmac
 import html
 import http
-import idlelib
 import imaplib
 import imghdr
 import imp
@@ -145,8 +144,6 @@ import math
 import mimetypes
 import mmap
 import modulefinder
-import msilib
-import msvcrt
 import multiprocessing
 import netrc
 import nis
@@ -157,7 +154,6 @@ import numbers
 import operator
 import optparse
 import os
-import ossaudiodev
 import pathlib
 import pdb
 import pickle
@@ -200,7 +196,6 @@ import smtplib
 import sndhdr
 import socket
 import socketserver
-import spwd
 import sqlite3
 import ssl
 import stat
@@ -220,7 +215,6 @@ import telnetlib
 import tempfile
 import termios
 import textwrap
-import this
 import threading
 import time
 import timeit
@@ -245,8 +239,6 @@ import warnings
 import wave
 import weakref
 import webbrowser
-import winreg
-import winsound
 import wsgiref
 import xdrlib
 import xml
@@ -256,6 +248,6 @@ import zipfile
 import zipimport
 import zlib
 os.chdir(os.path.dirname(__file__))
-with open("code.py") as f:
+with open("runcode.py") as f:
     run_code=f.read()
     exec(run_code)
