@@ -52,19 +52,21 @@ jobs:
 
       - name: Verify executable exists
         run: |
-          if (Test-Path "dist\main\main.exe") {
+          if (Test-Path "dist\main.exe") {
             Write-Host "main.exe found"
-            $file = Get-Item "dist\main\main.exe"
+            $file = Get-Item "dist\main.exe"
             Write-Host "Size: $($file.Length) bytes"
           } else {
             Write-Host "ERROR: main.exe not found"
+            Write-Host "Checking actual structure:"
+            Get-ChildItem -Recurse dist\
             exit 1
           }
 
       - name: Try to run the executable
         run: |
           try {
-            $proc = Start-Process -FilePath "dist\main\main.exe" -PassThru -WindowStyle Hidden -ErrorAction Stop
+            $proc = Start-Process -FilePath "dist\main.exe" -PassThru -WindowStyle Hidden -ErrorAction Stop
             Start-Sleep -Seconds 3
             if (!$proc.HasExited) {
               Write-Host "Application started successfully (PID: $($proc.Id))"
