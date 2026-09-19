@@ -30,8 +30,8 @@ jobs:
 
       - name: Display build output
         run: |
-          ls -la dist/main/
-          ls -la dist/main/*.exe
+          Get-ChildItem dist/main/
+          Get-ChildItem dist/main/*.exe
 
       - name: Run the executable
         run: |
