@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
 
     steps:
@@ -39,8 +39,61 @@ jobs:
           name: windows-executable
           path: dist/main/
 
-  test:
-    needs: build
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          sudo apt-get install -y python3-tk
+
+      - name: Build with PyInstaller
+        run: pyinstaller main.spec --clean
+
+      - name: Display build output
+        run: |
+          ls -la dist/main/
+          ls -la dist/main/*.exe
+
+      - name: Install xvfb and screenshot tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb scrot
+
+      - name: Run with xvfb and screenshot
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          ./dist/main/main &
+          sleep 3
+          scrot /tmp/screenshot.png
+          ls -la /tmp/screenshot.png
+
+      - name: Upload screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-screenshot
+          path: /tmp/screenshot.png
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-executable
+          path: dist/main/
+
+  test-windows:
+    needs: build-windows
     runs-on: windows-latest
 
     steps:
