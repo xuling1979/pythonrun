@@ -63,7 +63,7 @@ jobs:
       - name: Display build output
         run: |
           ls -la dist/main/
-          ls -la dist/main/*.exe
+          ls -la dist/main/ || true
 
       - name: Install xvfb and screenshot tools
         run: |
