@@ -1,24 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys
-import os
-import glob
-
 block_cipher = None
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        # 包含 tkinter 的 tcl/tk 库
-        (glob.glob(os.path.join(sys.prefix, 'tcl', '*')), 'tcl'),
-        (glob.glob(os.path.join(sys.prefix, 'tk', '*')), 'tk'),
-    ],
+    datas=[],
     hiddenimports=[
         'tkinter',
         '_tkinter',
         'tkinter.filedialog',
+        'tkinter.tix',
+        'tkinter.ttk',
     ],
     hookspath=[],
     hooksconfig={},
